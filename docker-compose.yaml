@@ -1,0 +1,25 @@
+version: '3'
+services: 
+  demo-app:
+    build: .
+    volumes:
+      - .dockervenv:/src/.venv
+      - .:/src
+    ports:
+      - 8000:8000 # Host Machine's 8000 port connect to docker's 8000 port 
+    environment: 
+      - WATCHFILES_FORCE_POLLING=true # requires for hot reload by env
+  db:
+    image: mysql:8.0
+    platform: linux/x86_64
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: 'demo'
+      TZ: 'Asia/Seoul'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 33306:3306
+volumes:
+  mysql_data:
